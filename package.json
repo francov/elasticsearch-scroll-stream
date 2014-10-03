@@ -1,0 +1,21 @@
+{
+  "name": "elasticsearch-scroll-stream",
+  "version": "1.0.0",
+  "description": "Elasticsearch Scroll query results as a Stream",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "elasticsearch",
+    "scroll",
+    "scan",
+    "stream"
+  ],
+  "author": "Francesco Valente",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^1.9.2",
+    "mocha": "^1.21.4"
+  }
+}

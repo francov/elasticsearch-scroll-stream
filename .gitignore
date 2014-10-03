@@ -1,0 +1,10 @@
+## EMACS
+*~
+\#*
+.\#*
+
+## VIM
+*.swp
+
+## NODEJS
+node_modules/
