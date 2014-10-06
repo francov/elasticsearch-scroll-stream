@@ -1,3 +1,7 @@
+/**
+ * Setup and teardown for these tests are external to this source file
+ * (i.e.: indexed documents are loaded into elasticsearch via bash script)
+ */
 var expect = require('chai').expect,
   elastical = require('elastical'),
   elasticsearch = require('elasticsearch');

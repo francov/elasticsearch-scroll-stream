@@ -2,9 +2,6 @@
  * Elasticsearch Scroll Stream
  *
  * Create a ReadableStream from an elasticsearch scroll query.
- *
- * NOTE: this module make use of (node-elastical)[https://github.com/ramv/node-elastical] module.
- * Make sure the first parameter to constructor is an instance of 'elastical'
  */
 var LibElasticalAdaptee = require("./lib/elastical-stream"),
     LibElasticsearchAdaptee = require("./lib/elasticsearch-stream");
@@ -14,7 +11,7 @@ var LibElasticalAdaptee = require("./lib/elastical-stream"),
  * ElasticsearchScrollStream
  * @param `client` - elastical instance
  * @param `query_opts` - query object to be passed to elastical.
- *        See (Elasticsearch API reference)[http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-request-body.html]
+ *        See [Elasticsearch API reference](http://www.elasticsearch.org/guide/en/elasticsearch/reference/1.x/search-request-body.html)
  * @param `stream_opts` - object to be passed to ReadableStream
  */
 var ElasticsearchScrollStream = function(client, query_opts, stream_opts) {
@@ -24,9 +21,9 @@ var ElasticsearchScrollStream = function(client, query_opts, stream_opts) {
   stream_opts = (!!stream_opts) ? stream_opts : {};
 
   if (!!client.nodes) {
-    return new LibElasticsearchAdaptee(client, query_opts, stream_opts); 
+    return new LibElasticsearchAdaptee(client, query_opts, stream_opts);
   } else {
-    return new LibElasticalAdaptee(client, query_opts, stream_opts); 
+    return new LibElasticalAdaptee(client, query_opts, stream_opts);
   }
 };
 
