@@ -1,8 +1,6 @@
 MOCHA_BIN=node_modules/.bin/mocha
 
-all: tests
-
-tests:
+all:
 	@tests/setup.sh > /dev/null
 	@sleep 1
 	-$(MOCHA_BIN) tests/tests.js
