@@ -1,0 +1,11 @@
+sudo: false
+language: node_js
+node_js:
+  - "0.11.0"
+services:
+  - elasticsearch
+before_script:
+  - sleep 10
+  - npm install
+script:
+  - npm test
