@@ -2,6 +2,10 @@
   "name": "elasticsearch-scroll-stream",
   "version": "1.0.0",
   "description": "Elasticsearch Scroll query results as a Stream",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/alcacoop/elasticsearch-scroll-stream.git"
+  },
   "main": "index.js",
   "scripts": {
     "test": "make"
@@ -12,8 +16,14 @@
     "scan",
     "stream"
   ],
-  "author": "Francesco Valente",
   "license": "MIT",
+  "author": {
+    "name": "Francesco Valente",
+    "email": "francesco.valente@alcacoop.it"
+  },
+  "engines": {
+    "node": ">= 0.10.x"
+  },
   "devDependencies": {
     "chai": "^1.9.2",
     "elastical": "0.0.13",
