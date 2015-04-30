@@ -2,6 +2,8 @@
 Elasticsearch Scroll Stream
 ============================
 
+[![Build Status](https://travis-ci.org/alcacoop/elasticsearch-scroll-stream.svg?branch=master)](https://travis-ci.org/alcacoop/elasticsearch-scroll-stream)
+
 Elasticsearch Scroll query results as a Node.js Readable Stream
 
 
