@@ -38,7 +38,7 @@ describe('elasticsearch_scroll_stream', function() {
 
     es_stream.on('data', function(data) {
       current_doc = JSON.parse(data.toString());
-      expect(current_doc.name).to.equal("second chunk name");
+      expect(current_doc.name[0]).to.equal("second chunk name");
       counter++;
     });
 
@@ -54,6 +54,7 @@ describe('elasticsearch_scroll_stream', function() {
 
 
   it('Lib Elasticsearch: should stream data correctly from elasticsearch', function(done) {
+    this.timeout(10000);
     var counter = 0;
     var current_doc;
     var elasticsearch_client = new elasticsearch.Client();
@@ -64,12 +65,25 @@ describe('elasticsearch_scroll_stream', function() {
       scroll: '10s',
       size: '50',
       fields: ['name'],
-      q: 'name:third*'
+      body: {
+        query: {
+          bool: {
+            must: [
+              {
+                query_string: {
+                  default_field: "_all",
+                  query: 'name:third*'
+                }
+              }
+            ]
+          }
+        }
+      }
     });
 
     es_stream.on('data', function(data) {
       current_doc = JSON.parse(data.toString());
-      expect(current_doc.name).to.equal("third chunk name");
+      expect(current_doc.name[0]).to.equal("third chunk name");
       counter++;
     });
 
