@@ -54,6 +54,7 @@ describe('elasticsearch_scroll_stream', function() {
 
 
   it('Lib Elasticsearch: should stream data correctly from elasticsearch', function(done) {
+    this.timeout(10000);
     var counter = 0;
     var current_doc;
     var elasticsearch_client = new elasticsearch.Client();
