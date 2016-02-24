@@ -38,7 +38,7 @@ describe('elasticsearch_scroll_stream', function() {
 
     es_stream.on('data', function(data) {
       current_doc = JSON.parse(data.toString());
-      expect(current_doc.name).to.equal("second chunk name");
+      expect(current_doc.name[0]).to.equal("second chunk name");
       counter++;
     });
 
@@ -64,12 +64,25 @@ describe('elasticsearch_scroll_stream', function() {
       scroll: '10s',
       size: '50',
       fields: ['name'],
-      q: 'name:third*'
+      body: {
+        query: {
+          bool: {
+            must: [
+              {
+                query_string: {
+                  default_field: "_all",
+                  query: 'name:third*'
+                }
+              }
+            ]
+          }
+        }
+      }
     });
 
     es_stream.on('data', function(data) {
       current_doc = JSON.parse(data.toString());
-      expect(current_doc.name).to.equal("third chunk name");
+      expect(current_doc.name[0]).to.equal("third chunk name");
       counter++;
     });
 
