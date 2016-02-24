@@ -1,13 +1,10 @@
-sudo: required
 language: node_js
 node_js:
-  - "0.10.32"
+  - "4.2.2"
 services:
   - elasticsearch
 before_install:
-  - curl -O https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.6.deb && sudo dpkg -i --force-confnew elasticsearch-0.90.6.deb
-  - sudo service elasticsearch restart
-  - npm install -g npm@'>=1.4.3'
+  - npm install -g npm@'>=2.14.7'
 before_script:
   - sleep 10
   - npm install
