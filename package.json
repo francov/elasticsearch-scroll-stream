@@ -1,6 +1,6 @@
 {
   "name": "elasticsearch-scroll-stream",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Elasticsearch Scroll query results as a Stream",
   "repository": {
     "type": "git",
