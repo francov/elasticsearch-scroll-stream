@@ -20,7 +20,40 @@ Latest released version:
 
 ## Usage with the official Elasticsearch js API
 
-Example with a [simple query strings](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-uri-request.html) query. 
+Example with a [simple query strings](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-uri-request.html) query.
+
+```js
+var elasticsearch = require('elasticsearch');
+var ElasticsearchScrollStream = require('elasticsearch-scroll-stream');
+
+var client = new elasticsearch.Client();
+
+// Create index and add documents here...
+
+// You need to pass the client instance and the query object
+// as parameters in the constructor
+var es_stream = new ElasticsearchScrollStream(client, {
+  index: 'elasticsearch-test-scroll-stream',
+  type: 'test-type',
+  search_type: 'scan',
+  scroll: '10s',
+  size: '50',
+  _source: ['name'], // you can use fields:['name'] alternatively, or nothing at all for the full _source result
+  q: 'name:*'
+});
+
+// Pipe the results to other writeble streams..
+es_stream.pipe(process.stdout);
+
+es_stream.on('end', function() {
+  console.log("End");
+});
+
+```
+
+
+Example with a [simple query strings](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-uri-request.html) query,
+and `optional_fields` specified (in this case we want `_id` and `_score` fields into results).
 
 ```js
 var elasticsearch = require('elasticsearch');
@@ -40,7 +73,7 @@ var es_stream = new ElasticsearchScrollStream(client, {
   size: '50',
   fields: ['name'],
   q: 'name:*'
-});
+}, ['_id', '_score']); // optional_fields parameter: allowed values are those supported by elasticsearch
 
 // Pipe the results to other writeble streams..
 es_stream.pipe(process.stdout);
