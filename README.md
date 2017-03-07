@@ -8,12 +8,12 @@ Elasticsearch Scroll query results as a Node.js Readable Stream.
 This module works with the following Elasticsearch nodejs clients:
 
  - [elasticsearch](https://www.npmjs.org/package/elasticsearch) (official Elasticsearch js API)
- - [elastical](https://www.npmjs.org/package/elastical) (Discontinued support)
+ - [elastical](https://www.npmjs.org/package/elastical) (DEPRECATED - Discontinued support)
 
 
 ## Installing
 
-Latest released version:
+To install the latest released version:
 
     npm install elasticsearch-scroll-stream --save
 
@@ -35,10 +35,9 @@ var client = new elasticsearch.Client();
 var es_stream = new ElasticsearchScrollStream(client, {
   index: 'elasticsearch-test-scroll-stream',
   type: 'test-type',
-  search_type: 'scan',
   scroll: '10s',
   size: '50',
-  _source: ['name'], // you can use fields:['name'] alternatively, or nothing at all for the full _source result
+  _source: ['name'],
   q: 'name:*'
 });
 
@@ -68,10 +67,9 @@ var client = new elasticsearch.Client();
 var es_stream = new ElasticsearchScrollStream(client, {
   index: 'elasticsearch-test-scroll-stream',
   type: 'test-type',
-  search_type: 'scan',
   scroll: '10s',
   size: '50',
-  fields: ['name'],
+  _source: ['name'],
   q: 'name:*'
 }, ['_id', '_score']); // optional_fields parameter: allowed values are those supported by elasticsearch
 
@@ -99,10 +97,9 @@ var client = new elasticsearch.Client();
 var es_stream = new ElasticsearchScrollStream(client, {
   index: 'elasticsearch-test-scroll-stream',
   type: 'test-type',
-  search_type: 'scan',
   scroll: '10s',
   size: '50',
-  fields: ['name'],
+  _source: ['name'],
   body: {
     query: {
       bool: {
