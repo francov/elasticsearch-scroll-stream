@@ -10,7 +10,7 @@ var ElasticsearchScrollStream = require('../index.js');
 
 describe('elasticsearch_scroll_stream', function() {
 
-  it('Lib Elastical: stream data correctly from elasticsearch', function(done) {
+  it.skip('[DEPRECATED Lib Elastical]: stream data correctly from elasticsearch', function(done) {
     var counter = 0;
     var current_doc;
     var elastical_client = new elastical.Client();
@@ -18,10 +18,9 @@ describe('elasticsearch_scroll_stream', function() {
     var es_stream = new ElasticsearchScrollStream(elastical_client, {
       index: 'elasticsearch-test-scroll-stream',
       type: 'test-type',
-      search_type: 'scan',
       scroll: '10s',
       size: '50',
-      fields: ['name'],
+      _source: ['name'],
       query: {
         bool: {
           must: [
@@ -38,52 +37,7 @@ describe('elasticsearch_scroll_stream', function() {
 
     es_stream.on('data', function(data) {
       current_doc = JSON.parse(data.toString());
-      expect(current_doc.name[0]).to.equal("second chunk name");
-      counter++;
-    });
-
-    es_stream.on('end', function() {
-      expect(counter).to.equal(20);
-      done();
-    });
-
-    es_stream.on('error', function(err) {
-      done(err);
-    });
-  });
-
-
-  it("Lib Elasticsearch: stream correctly when 'fields' property is specified", function(done) {
-    this.timeout(10000);
-    var counter = 0;
-    var current_doc;
-    var elasticsearch_client = new elasticsearch.Client();
-
-    var es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
-      index: 'elasticsearch-test-scroll-stream',
-      type: 'test-type',
-      scroll: '10s',
-      size: '50',
-      fields: ['name'],
-      body: {
-        query: {
-          bool: {
-            must: [
-              {
-                query_string: {
-                  default_field: "_all",
-                  query: 'name:third*'
-                }
-              }
-            ]
-          }
-        }
-      }
-    });
-
-    es_stream.on('data', function(data) {
-      current_doc = JSON.parse(data.toString());
-      expect(current_doc.name[0]).to.equal("third chunk name");
+      expect(current_doc.name).to.equal("second chunk name");
       counter++;
     });
 
@@ -186,51 +140,6 @@ describe('elasticsearch_scroll_stream', function() {
     });
   });
 
-
-  it("Lib Elasticsearch: stream correctly when 'fields' property is specified and optional_fields required", function(done) {
-    this.timeout(10000);
-    var counter = 0;
-    var current_doc;
-    var elasticsearch_client = new elasticsearch.Client();
-
-    var es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
-      index: 'elasticsearch-test-scroll-stream',
-      type: 'test-type',
-      scroll: '10s',
-      size: '50',
-      fields: ['name'],
-      body: {
-        query: {
-          bool: {
-            must: [
-              {
-                query_string: {
-                  default_field: "_all",
-                  query: 'name:third*'
-                }
-              }
-            ]
-          }
-        }
-      }
-    }, ['_id']);
-
-    es_stream.on('data', function(data) {
-      current_doc = JSON.parse(data.toString());
-      expect(current_doc.name[0]).to.equal("third chunk name");
-      expect(current_doc).to.have.property("_id");
-      counter++;
-    });
-
-    es_stream.on('end', function() {
-      expect(counter).to.equal(20);
-      done();
-    });
-
-    es_stream.on('error', function(err) {
-      done(err);
-    });
-  });
 
   it("Lib Elasticsearch: stream correctly when '_source' property is specified and optional_fields required", function(done) {
     this.timeout(10000);
