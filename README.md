@@ -11,6 +11,12 @@ This module works with the following Elasticsearch nodejs clients:
  - [elastical](https://www.npmjs.org/package/elastical) (DEPRECATED - Discontinued support)
 
 
+## API
+
+`ElasticsearchScrollStream` is a Readable Stream, so it supports all the methods of a classic `Stream#Readable`.
+In addition it exposes a `#close()` method to force the stream to stop sourcing from Elasticsearch.
+
+
 ## Installing
 
 To install the latest released version:
@@ -125,6 +131,62 @@ es_stream.on('end', function() {
 
 ```
 
+Example of using the `close()` method.
+
+```js
+var elasticsearch = require('elasticsearch');
+var ElasticsearchScrollStream = require('elasticsearch-scroll-stream');
+
+// Create index and add documents here...
+
+// You need to pass the client instance and the query object
+// as parameters in the constructor
+
+var pageSize = '5';
+var stopCounterIndex = (parseInt(pageSize) + 1);
+var counter = 0;
+var current_doc;
+var elasticsearch_client = new elasticsearch.Client();
+
+var es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
+  index: 'elasticsearch-test-scroll-stream',
+  type: 'test-type',
+  scroll: '10s',
+  size: pageSize,
+  _source: ["name"],
+  body: {
+    query: {
+      bool: {
+        must: [
+          {
+            query_string: {
+              default_field: "_all",
+              query: 'name:third*'
+            }
+          }
+        ]
+      }
+    }
+  }
+}, ['_id', '_score']);
+
+es_stream.on('data', function(data) {
+  current_doc = JSON.parse(data.toString());
+  if (counter == stopCounterIndex) {
+    es_stream.close();
+  }
+  counter++;
+});
+
+es_stream.on('end', function() {
+  console.log(counter);
+});
+
+es_stream.on('error', function(err) {
+  console.log(err);
+});
+
+```
 See test files for more examples.
 
 
