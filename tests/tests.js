@@ -81,6 +81,7 @@ describe('elasticsearch_scroll_stream', function() {
     });
 
     es_stream.on('data', function(data) {
+      expect(es_stream._total).to.equal(20);
       current_doc = JSON.parse(data.toString());
       expect(current_doc.name).to.equal("third chunk name");
       counter++;

@@ -15,8 +15,8 @@ This module works with the following Elasticsearch nodejs clients:
 
 `ElasticsearchScrollStream` is a Readable Stream, so it supports all the methods of a classic `Stream#Readable`.
 In addition it exposes a `#close()` method to force the stream to stop sourcing from Elasticsearch.
-When the stream is done, it will contain an attribute `_total` that is the total number of matching documents, which can be useful if you forced the stream to stop.
-
+When the stream begins to be consumed (starting from the first `data` event), it will contain an attribute `_total`
+that is the total number of matched documents.
 
 ## Installing
 
