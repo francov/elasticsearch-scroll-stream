@@ -1,12 +1,12 @@
 language: node_js
 node_js:
-  - "4.2.2"
+  - "8.11.3"
 services:
   - elasticsearch
 before_install:
-  - npm install -g npm@'>=2.14.7'
+  - npm install -g npm@'>=6.4.1'
 before_script:
   - sleep 10
-  - npm install
+  - npm ci
 script:
   - npm test

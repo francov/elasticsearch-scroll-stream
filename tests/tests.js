@@ -3,7 +3,6 @@
  * (i.e.: indexed documents are loaded into elasticsearch via bash script)
  */
 var expect = require('chai').expect,
-  elastical = require('elastical'),
   elasticsearch = require('elasticsearch');
 
 var ElasticsearchScrollStream = require('../index.js');
