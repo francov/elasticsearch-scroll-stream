@@ -1,4 +1,7 @@
-elasticsearch:
-  image: elasticsearch:latest
-  ports:
-    - "127.0.0.1:9200:9200"
+version: '2'
+
+services:
+  elasticsearch:
+    image: elasticsearch:6.5.1
+    ports:
+      - "127.0.0.1:9200:9200"
