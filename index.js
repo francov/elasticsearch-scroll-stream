@@ -6,7 +6,7 @@
 var LibElasticalAdaptee = require("./lib/elastical-stream"),
     LibElasticsearchAdaptee = require("./lib/elasticsearch-stream");
 
-var allowed_extrafields = ['_id', '_score', '_type', '_index', '_parent', '_routing'];
+var allowed_extrafields = ['_id', '_score', '_type', '_index', '_parent', '_routing', 'inner_hits'];
 
 /**
  * ElasticsearchScrollStream
