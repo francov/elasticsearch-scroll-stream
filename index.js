@@ -6,6 +6,7 @@
 var LibElasticalAdaptee = require("./lib/elastical-stream"),
     LibElasticsearchAdaptee = require("./lib/elasticsearch-stream");
 
+var allowed_extrafields = ['_id', '_score', '_type', '_index', '_parent', '_routing', 'inner_hits'];
 
 /**
  * ElasticsearchScrollStream
@@ -23,7 +24,6 @@ var ElasticsearchScrollStream = function(client, query_opts, optional_fields, st
   optional_fields = (!!optional_fields) ? optional_fields : []
   if (!Array.isArray(optional_fields)) throw new Error("ElasticsearchScrollStream: optional_fields must be an array", optional_fields);
 
-  var allowed_extrafields = ['_id', '_score', '_type', '_index', '_parent', '_routing'];
   optional_fields.forEach(function(entry) {
     if (allowed_extrafields.indexOf(entry) == -1) {
       throw new Error("ElasticsearchScrollStream: property '" + entry + "' not allowed in optional_fields");
