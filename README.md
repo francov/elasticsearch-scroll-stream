@@ -5,10 +5,10 @@
 
 Elasticsearch Scroll query results as a Node.js Readable Stream.
 
-This module works with the following Elasticsearch nodejs clients:
+This module works with the official Elasticsearch nodejs clients:
 
- - [elasticsearch](https://www.npmjs.org/package/elasticsearch) (official Elasticsearch js API)
- - [elastical](https://www.npmjs.org/package/elastical) (DEPRECATED - Discontinued support)
+ - [@elastic/elasticsearch](https://www.npmjs.com/package/@elastic/elasticsearch) (new Elasticsearch js API)
+ - [elasticsearch](https://www.npmjs.org/package/elasticsearch) (old Elasticsearch js API)
 
 
 ## API
@@ -30,31 +30,30 @@ To install the latest released version:
 Example with a [simple query strings](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-uri-request.html) query.
 
 ```js
-var elasticsearch = require('elasticsearch');
-var ElasticsearchScrollStream = require('elasticsearch-scroll-stream');
+const { Client } = require('@elastic/elasticsearch')
+const ElasticsearchScrollStream = require('elasticsearch-scroll-stream')
 
-var client = new elasticsearch.Client();
+const elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
 // Create index and add documents here...
 
 // You need to pass the client instance and the query object
 // as parameters in the constructor
-var es_stream = new ElasticsearchScrollStream(client, {
+const es_stream = new ElasticsearchScrollStream(client, {
   index: 'elasticsearch-test-scroll-stream',
   type: 'test-type',
   scroll: '10s',
   size: '50',
   _source: ['name'],
-  q: 'name:*'
-});
+  q: 'name:*',
+})
 
 // Pipe the results to other writeble streams..
-es_stream.pipe(process.stdout);
+es_stream.pipe(process.stdout)
 
 es_stream.on('end', function() {
-  console.log("End");
-});
-
+  console.log('End')
+})
 ```
 
 
@@ -62,16 +61,16 @@ Example with a [simple query strings](http://www.elasticsearch.org/guide/en/elas
 and `optional_fields` specified (in this case we want `_id` and `_score` fields into results).
 
 ```js
-var elasticsearch = require('elasticsearch');
-var ElasticsearchScrollStream = require('elasticsearch-scroll-stream');
+const { Client } = require('@elastic/elasticsearch')
+const ElasticsearchScrollStream = require('elasticsearch-scroll-stream')
 
-var client = new elasticsearch.Client();
+const elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
 // Create index and add documents here...
 
 // You need to pass the client instance and the query object
 // as parameters in the constructor
-var es_stream = new ElasticsearchScrollStream(client, {
+const es_stream = new ElasticsearchScrollStream(client, {
   index: 'elasticsearch-test-scroll-stream',
   type: 'test-type',
   scroll: '10s',
@@ -81,10 +80,10 @@ var es_stream = new ElasticsearchScrollStream(client, {
 }, ['_id', '_score']); // optional_fields parameter: allowed values are those supported by elasticsearch
 
 // Pipe the results to other writeble streams..
-es_stream.pipe(process.stdout);
+es_stream.pipe(process.stdout)
 
 es_stream.on('end', function() {
-  console.log("End");
+  console.log("End")
 });
 
 ```
@@ -92,16 +91,16 @@ es_stream.on('end', function() {
 Example with a full request definition using the [Elasticsearch Query DSL](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html).
 
 ```js
-var elasticsearch = require('elasticsearch');
-var ElasticsearchScrollStream = require('elasticsearch-scroll-stream');
+const { Client } = require('@elastic/elasticsearch')
+const ElasticsearchScrollStream = require('elasticsearch-scroll-stream')
 
-var client = new elasticsearch.Client();
+const elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
 // Create index and add documents here...
 
 // You need to pass the client instance and the query object
 // as parameters in the constructor
-var es_stream = new ElasticsearchScrollStream(client, {
+const es_stream = new ElasticsearchScrollStream(client, {
   index: 'elasticsearch-test-scroll-stream',
   type: 'test-type',
   scroll: '10s',
@@ -124,10 +123,10 @@ var es_stream = new ElasticsearchScrollStream(client, {
 });
 
 // Pipe the results to other writeble streams..
-es_stream.pipe(process.stdout);
+es_stream.pipe(process.stdout)
 
 es_stream.on('end', function() {
-  console.log("End");
+  console.log("End")
 });
 
 ```
@@ -135,21 +134,19 @@ es_stream.on('end', function() {
 Example of using the `close()` method.
 
 ```js
-var elasticsearch = require('elasticsearch');
-var ElasticsearchScrollStream = require('elasticsearch-scroll-stream');
+const { Client } = require('@elastic/elasticsearch')
+const ElasticsearchScrollStream = require('elasticsearch-scroll-stream')
+
 
 // Create index and add documents here...
 
-// You need to pass the client instance and the query object
-// as parameters in the constructor
+const pageSize = '5'
+let stopCounterIndex = (parseInt(pageSize) + 1)
+let counter = 0
+let current_doc
+const elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
-var pageSize = '5';
-var stopCounterIndex = (parseInt(pageSize) + 1);
-var counter = 0;
-var current_doc;
-var elasticsearch_client = new elasticsearch.Client();
-
-var es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
+const es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
   index: 'elasticsearch-test-scroll-stream',
   type: 'test-type',
   scroll: '10s',
@@ -172,19 +169,19 @@ var es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
 }, ['_id', '_score']);
 
 es_stream.on('data', function(data) {
-  current_doc = JSON.parse(data.toString());
+  current_doc = JSON.parse(data.toString())
   if (counter == stopCounterIndex) {
-    es_stream.close();
+    es_stream.close()
   }
-  counter++;
+  counter++
 });
 
 es_stream.on('end', function() {
-  console.log(counter);
+  console.log(counter)
 });
 
 es_stream.on('error', function(err) {
-  console.log(err);
+  console.log(err)
 });
 
 ```
