@@ -25,9 +25,8 @@
     "node": ">= 0.10.x"
   },
   "devDependencies": {
+    "@elastic/elasticsearch": "^7.2.0",
     "chai": "^4.2.0",
-    "elastical": "0.0.13",
-    "elasticsearch": "^16.0.0",
     "mocha": "^5.2.0"
   }
 }
