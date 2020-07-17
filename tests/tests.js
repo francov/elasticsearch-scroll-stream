@@ -2,20 +2,20 @@
  * Setup and teardown for these tests are external to this source file
  * (i.e.: indexed documents are loaded into elasticsearch via bash script)
  */
-var expect = require('chai').expect
+const { expect } = require('chai')
 
-var Client = require('@elastic/elasticsearch').Client
+const { Client } = require('@elastic/elasticsearch')
 
-var ElasticsearchScrollStream = require('../index.js')
+const ElasticsearchScrollStream = require('../index.js')
 
-describe('elasticsearch_scroll_stream', function() {
-  it("Should stream correctly when '_source' property is specified", function(done) {
+describe('elasticsearch_scroll_stream', function () {
+  it("Should stream correctly when '_source' property is specified", function (done) {
     this.timeout(10000)
-    var counter = 0
-    var current_doc
-    var elasticsearch_client = new Client({ node: 'http://localhost:9200' })
+    let counter = 0
+    let current_doc
+    let elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
-    var es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
+    let es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
       index: 'elasticsearch-test-scroll-stream',
       type: 'test-type',
       scroll: '10s',
@@ -37,29 +37,29 @@ describe('elasticsearch_scroll_stream', function() {
       },
     })
 
-    es_stream.on('data', function(data) {
+    es_stream.on('data', function (data) {
       expect(es_stream._total).to.equal(20)
       current_doc = JSON.parse(data.toString())
       expect(current_doc.name).to.equal('third chunk name')
       counter++
     })
 
-    es_stream.on('end', function() {
+    es_stream.on('end', function () {
       expect(counter).to.equal(20)
       done()
     })
 
-    es_stream.on('error', function(err) {
+    es_stream.on('error', function (err) {
       done(err)
     })
   })
 
-  it('Should explicitly clear the active search context when the scroll finishes', function(done) {
+  it('Should explicitly clear the active search context when the scroll finishes', function (done) {
     this.timeout(10000)
-    var current_doc
-    var elasticsearch_client = new Client({ node: 'http://localhost:9200' })
+    let current_doc
+    let elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
-    var es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
+    let es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
       index: 'elasticsearch-test-scroll-stream',
       type: 'test-type',
       scroll: '10s',
@@ -81,36 +81,36 @@ describe('elasticsearch_scroll_stream', function() {
       },
     })
 
-    es_stream.on('data', function(data) {
+    es_stream.on('data', function (data) {
       current_doc = JSON.parse(data.toString())
       expect(current_doc.name).to.equal('third chunk name')
     })
 
-    es_stream.on('end', function() {
+    es_stream.on('end', function () {
       elasticsearch_client.indices.stats(
         {
           index: '_all',
           metric: 'search',
         },
-        function(err, res) {
+        function (err, res) {
           expect(res.body._all.total.search.open_contexts).to.equal(0)
           done()
         }
       )
     })
 
-    es_stream.on('error', function(err) {
+    es_stream.on('error', function (err) {
       done(err)
     })
   })
 
-  it('Should stream correctly when no fields are specified (full _source)', function(done) {
+  it('Should stream correctly when no fields are specified (full _source)', function (done) {
     this.timeout(10000)
-    var counter = 0
-    var current_doc
-    var elasticsearch_client = new Client({ node: 'http://localhost:9200' })
+    let counter = 0
+    let current_doc
+    let elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
-    var es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
+    let es_stream = new ElasticsearchScrollStream(elasticsearch_client, {
       index: 'elasticsearch-test-scroll-stream',
       type: 'test-type',
       scroll: '10s',
@@ -131,29 +131,29 @@ describe('elasticsearch_scroll_stream', function() {
       },
     })
 
-    es_stream.on('data', function(data) {
+    es_stream.on('data', function (data) {
       current_doc = JSON.parse(data.toString())
       expect(current_doc.name).to.equal('third chunk name')
       counter++
     })
 
-    es_stream.on('end', function() {
+    es_stream.on('end', function () {
       expect(counter).to.equal(20)
       done()
     })
 
-    es_stream.on('error', function(err) {
+    es_stream.on('error', function (err) {
       done(err)
     })
   })
 
-  it("Should stream correctly when '_source' property is specified and optional_fields required", function(done) {
+  it("Should stream correctly when '_source' property is specified and optional_fields required", function (done) {
     this.timeout(10000)
-    var counter = 0
-    var current_doc
-    var elasticsearch_client = new Client({ node: 'http://localhost:9200' })
+    let counter = 0
+    let current_doc
+    let elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
-    var es_stream = new ElasticsearchScrollStream(
+    let es_stream = new ElasticsearchScrollStream(
       elasticsearch_client,
       {
         index: 'elasticsearch-test-scroll-stream',
@@ -179,7 +179,7 @@ describe('elasticsearch_scroll_stream', function() {
       ['_id', '_score']
     )
 
-    es_stream.on('data', function(data) {
+    es_stream.on('data', function (data) {
       current_doc = JSON.parse(data.toString())
       expect(current_doc.name).to.equal('third chunk name')
       expect(current_doc).to.have.property('_id')
@@ -187,22 +187,21 @@ describe('elasticsearch_scroll_stream', function() {
       counter++
     })
 
-    es_stream.on('end', function() {
+    es_stream.on('end', function () {
       expect(counter).to.equal(20)
       done()
     })
 
-    es_stream.on('error', function(err) {
+    es_stream.on('error', function (err) {
       done(err)
     })
   })
 
-  it('Should throw error when optional_fields is not an array', function(done) {
-    var elasticsearch_client = new Client({ node: 'http://localhost:9200' })
+  it('Should throw error when optional_fields is not an array', function (done) {
+    let elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
-    expect(
-      ElasticsearchScrollStream.bind(
-        this,
+    expect(() => {
+      new ElasticsearchScrollStream(
         elasticsearch_client,
         {
           index: 'elasticsearch-test-scroll-stream',
@@ -227,16 +226,15 @@ describe('elasticsearch_scroll_stream', function() {
         },
         '_id'
       )
-    ).to.throw(/optional_fields must be an array/)
+    }).to.throw(/optional_fields must be an array/)
     done()
   })
 
-  it('Should throw error when optional_fields does not contain an allowed value', function(done) {
-    var elasticsearch_client = new Client({ node: 'http://localhost:9200' })
+  it('Should throw error when optional_fields does not contain an allowed value', function (done) {
+    let elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
-    expect(
-      ElasticsearchScrollStream.bind(
-        this,
+    expect(() => {
+      new ElasticsearchScrollStream(
         elasticsearch_client,
         {
           index: 'elasticsearch-test-scroll-stream',
@@ -261,19 +259,19 @@ describe('elasticsearch_scroll_stream', function() {
         },
         ['invalid_value']
       )
-    ).to.throw(/not allowed in optional_fields/)
+    }).to.throw(/not allowed in optional_fields/)
     done()
   })
 
-  it("Should correctly close the stream when #close() method is called (using 'return' in 'data' handler)", function(done) {
+  it("Should correctly close the stream when #close() method is called (using 'return' in 'data' handler)", function (done) {
     this.timeout(10000)
-    var pageSize = '5'
-    var stopCounterIndex = parseInt(pageSize) + 1
-    var counter = 0
-    var current_doc
-    var elasticsearch_client = new Client({ node: 'http://localhost:9200' })
+    let pageSize = '5'
+    let stopCounterIndex = parseInt(pageSize) + 1
+    let counter = 0
+    let current_doc
+    let elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
-    var es_stream = new ElasticsearchScrollStream(
+    let es_stream = new ElasticsearchScrollStream(
       elasticsearch_client,
       {
         index: 'elasticsearch-test-scroll-stream',
@@ -299,7 +297,7 @@ describe('elasticsearch_scroll_stream', function() {
       ['_id', '_score']
     )
 
-    es_stream.on('data', function(data) {
+    es_stream.on('data', function (data) {
       current_doc = JSON.parse(data.toString())
       if (counter == stopCounterIndex) {
         es_stream.close()
@@ -308,25 +306,25 @@ describe('elasticsearch_scroll_stream', function() {
       counter++
     })
 
-    es_stream.on('end', function() {
+    es_stream.on('end', function () {
       expect(counter).to.equal(stopCounterIndex)
       done()
     })
 
-    es_stream.on('error', function(err) {
+    es_stream.on('error', function (err) {
       done(err)
     })
   })
 
-  it("Should correctly close the stream when #close() method is called (without 'return' into 'data' handler)", function(done) {
+  it("Should correctly close the stream when #close() method is called (without 'return' into 'data' handler)", function (done) {
     this.timeout(10000)
-    var pageSize = '5'
-    var stopCounterIndex = parseInt(pageSize) + 1
-    var counter = 0
-    var current_doc
-    var elasticsearch_client = new Client({ node: 'http://localhost:9200' })
+    let pageSize = '5'
+    let stopCounterIndex = parseInt(pageSize) + 1
+    let counter = 0
+    let current_doc
+    let elasticsearch_client = new Client({ node: 'http://localhost:9200' })
 
-    var es_stream = new ElasticsearchScrollStream(
+    let es_stream = new ElasticsearchScrollStream(
       elasticsearch_client,
       {
         index: 'elasticsearch-test-scroll-stream',
@@ -352,7 +350,7 @@ describe('elasticsearch_scroll_stream', function() {
       ['_id', '_score']
     )
 
-    es_stream.on('data', function(data) {
+    es_stream.on('data', function (data) {
       current_doc = JSON.parse(data.toString())
       if (counter == stopCounterIndex) {
         es_stream.close()
@@ -360,12 +358,12 @@ describe('elasticsearch_scroll_stream', function() {
       counter++
     })
 
-    es_stream.on('end', function() {
+    es_stream.on('end', function () {
       expect(counter).to.equal(parseInt(pageSize) * 2)
       done()
     })
 
-    es_stream.on('error', function(err) {
+    es_stream.on('error', function (err) {
       done(err)
     })
   })
