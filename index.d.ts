@@ -9,7 +9,8 @@ type optionalField =
   | "_type"
   | "_index"
   | "_parent"
-  | "_routing";
+  | "_routing"
+  | "inner_hits";
 
 declare class ElasticsearchScrollStream extends Readable {
   public constructor(

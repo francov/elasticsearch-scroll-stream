@@ -22,7 +22,7 @@
     "email": "francesco.valente@alcacoop.it"
   },
   "engines": {
-    "node": ">= 0.10.x"
+    "node": ">=8"
   },
   "devDependencies": {
     "@elastic/elasticsearch": "^7.6.1",
